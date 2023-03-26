@@ -1,8 +1,12 @@
+const { json } = require('express');
 const express = require('express')
-const mongoose = require('mongoose')
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 const UserModel = require('./Users')
 
 const router = express.Router()
+
 
 router.get("/getusers", async (req, res) => {
     try {
@@ -15,7 +19,8 @@ router.get("/getusers", async (req, res) => {
 
 
 
-router.post("/createuser", async (req, res) =>{
+router.post("/", async (req, res) =>{
+    debugger
     const user = req.body
     const newUser = new UserModel(user)
     try{
@@ -23,24 +28,39 @@ router.post("/createuser", async (req, res) =>{
     }catch(err){
         res.send(err)
     }
-    
-    res.send(user)
+    res.send(JSON.stringify(newUser))
 })
 
-router.put("/updateuser/:name", async (req, res) => {
-    const name = req.params.name;
+router.put("/user/:id", async (req, res) => {
+    const id = req.params.id;
     const userUpdates = req.body;
+    console.log('id:', id);
+    console.log('userUpdates:', userUpdates);
     try {
         const result = await UserModel.findOneAndUpdate(
-            { name: name },
+            { _id: ObjectId(id) },
             userUpdates,
-            { new: true }
+            { new: true, select: 'password email' }
         );
-        res.send(result);
+        console.log('result:', result);
+        res.send(JSON.stringify(result));
     } catch (err) {
         res.send(err);
     }
 });
+
+
+
+router.delete("/deleteuser/:id", async (req, res) => {
+    const id = req.params.id;
+    try {
+      const result = await UserModel.deleteOne( { _id: ObjectId(id) },);
+      res.send(result);
+    } catch (err) {
+      res.send(err);
+    }
+  });
+  
 
 
 

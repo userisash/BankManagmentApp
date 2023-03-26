@@ -1,30 +1,44 @@
 const mongoose = require('mongoose')
+const uniqid = require('uniqid');
 
 const UserSchema = new mongoose.Schema({
-    name: {
-        type:String,
-        required: true
-        }, 
-    username:{
-        type:String,
-        required: true
+    name:{
+        type: String,
+        // required: [true, "print name here"],
     },
-    passportId:{
-        type:Number,
-        required:true,
-        default:0
+    email: {
+        type: String,
+        required: [true, "print email here"],
+        unique: true,
     },
-    cash:{
-        type:Number,
-        required:true,
-        default:0
+    password: {
+        type: String,
+        required: [true, "print password here"],
     },
-    credits:{
-        type:Number,
-        required:true,
-        default:0
+    Usertype: {
+        type: String,
+        // required: [true, "assign user type here"],
+        default: "user"
+    },
+    cash: {
+        type: Number,
+        // required: [true, "cash"],
+        default: 0
+    },
+    credit: {
+        type: Number,
+        // required: [true, "credit "],
+        default: 0
+    },
+    passportId: {
+        type: String,
+        // required: [true, "please add passport Id "],
+        unique: true,
+        default:uniqid()
     }
 })
+
+
 
 const UserModel = new mongoose.model("users", UserSchema)
 
